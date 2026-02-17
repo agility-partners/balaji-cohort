@@ -1,5 +1,5 @@
 # crypto-watch-website
-Cryptocurrency Watchlist Website
+A Cryptocurrency Watchlist website built using React, TypeScript, Tailwind CSS, Next.js, and Playwright
 
 ## Usage
 
