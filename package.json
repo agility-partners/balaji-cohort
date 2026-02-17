@@ -1,0 +1,23 @@
+{
+  "name": "balaji-cohort",
+  "version": "1.0.0",
+  "description": "Cryptocurrency Watchlist Website",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agility-partners/balaji-cohort.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/agility-partners/balaji-cohort/issues"
+  },
+  "homepage": "https://github.com/agility-partners/balaji-cohort#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.2.3"
+  }
+}
