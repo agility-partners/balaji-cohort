@@ -6,7 +6,11 @@ A Cryptocurrency Watchlist website built using React, TypeScript, Tailwind CSS, 
 1. Clone this repository:
     ```
     git clone https://github.com/agility-partners/balaji-cohort.git .
-    cd crypto-watchlist
+    ```
+
+2. Install dependencies
+    ```
+    npm install
     ```
 
 2. Run website
