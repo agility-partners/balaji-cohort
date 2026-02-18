@@ -1,3 +1,4 @@
+import { cryptosData } from '@/domains/crypto/mock/cryptos.mock';
 import { test, expect } from '@playwright/test';
 
 test.describe(`page tab tests`, () => {
@@ -24,21 +25,11 @@ test.describe('page content tests', () => {
     await expect(page.getByRole('heading', { name: 'Crypto Watchlist' })).toBeVisible();
   }); 
 
-  test('has BTC card', async ({ page }) => {  
-    await expect(page.getByRole('heading', { name: 'Bitcoin (BTC)' })).toBeVisible();
-  }); 
-  
-  test('has ETH card', async ({ page }) => {  
-    await expect(page.getByRole('heading', { name: 'Ethereum (ETH)' })).toBeVisible();
-  }); 
-  
-  test('has ADA card', async ({ page }) => {  
-    await expect(page.getByRole('heading', { name: 'Cardano (ADA)' })).toBeVisible();
-  }); 
-  
-  test('has SOL card', async ({ page }) => {  
-    await expect(page.getByRole('heading', { name: 'Solana (SOL)' })).toBeVisible();
-  });
+  for (const crypto of cryptosData) {
+    test(`has ${crypto.name} card`, async ({ page }) => {  
+      await expect(page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` })).toBeVisible();
+    }); 
+  }
 });
 
 test.describe('navbar tests', () => {
