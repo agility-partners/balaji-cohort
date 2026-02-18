@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CryptoCardProps } from "./page";
+import { CryptoCardProps } from "../page";
 
 export default function CryptoCard({ name, ticker, price }: CryptoCardProps) {
     return (

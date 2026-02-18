@@ -18,7 +18,7 @@ export default function CryptoDetailsPage() {
     });
 
     return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center font-sans bg-gradient-to-br from-black via-purple-900 to-purple-700">
+        <>
             <h1 className="text-4xl text-center font-bold mb-4">Crypto Details for: {ticker}</h1>
             {cryptoData ? (
                 <div className="text-center p-6 rounded shadow-md">
@@ -32,6 +32,6 @@ export default function CryptoDetailsPage() {
             ) : (
                 <p>Crypto not found</p>
             )}
-        </div>
+        </>
     )
 }

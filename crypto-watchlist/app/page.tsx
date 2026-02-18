@@ -1,4 +1,4 @@
-import CryptoCard from "./CryptoCard";
+import CryptoCard from "./components/CryptoCard";
 
 export interface CryptoCardProps {
   name: string; 
@@ -59,9 +59,8 @@ export const cryptosData: CryptoDetails[] = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center font-sans bg-gradient-to-br from-black via-purple-900 to-purple-700">
-
-      <h1 className="text-5xl font-extrabold text-center mb-10 mt-8 text-purple-200 drop-shadow-lg">
+    <>
+      <h1 className="text-7xl font-extrabold text-center mb-20 mt-0 text-purple-200 drop-shadow-lg">
         Crypto Watchlist
       </h1>
 
@@ -75,7 +74,6 @@ export default function Home() {
           />
         ))}
       </div>
-      
-    </div>
+    </>
   );
 }
