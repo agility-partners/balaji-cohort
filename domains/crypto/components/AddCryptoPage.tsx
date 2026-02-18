@@ -22,7 +22,7 @@ export default function AddCryptoPage() {
                     value={form.ticker}
                     onChange={(e) => setForm({ ticker: e.target.value })}
                     placeholder="Enter Crypto Ticker (e.g. BTC)"
-                    className="w-full p-2 border-2 border-purple-800 rounded focus:border-purple-500 placeholder-purple-300 placeholder-opacity-100 text-xl font-semibold text-black"
+                    className="w-full p-2 border-2 border-purple-800 rounded focus:border-purple-500 placeholder-purple-300 text-xl font-semibold text-black"
                     required
                 />
                 <button type="submit" className="bg-purple-700 text-white rounded p-2 font-bold hover:bg-purple-800">

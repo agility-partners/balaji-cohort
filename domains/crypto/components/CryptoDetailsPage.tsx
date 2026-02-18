@@ -20,7 +20,7 @@ export default function CryptoDetailsPage() {
 
     return (
         <>
-            <h1 className="text-4xl text-center font-bold mb-4">Crypto Details for: {ticker}</h1>
+            <h1 className="text-4xl text-center font-bold mb-4">Crypto Details for: {cryptoData?.ticker}</h1>
             {cryptoData ? (
                 <div className="text-center p-6 rounded shadow-md">
                     <h2 className="text-2xl font-semibold mb-2">{cryptoData.name} ({cryptoData.ticker})</h2>

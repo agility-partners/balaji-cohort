@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
@@ -34,17 +35,17 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen w-full font-sans bg-gradient-to-br from-black via-purple-900 to-purple-700`}>
 
         <nav className={`${montserrat.variable} py-8 px-4`}>
-          <ul className="max-w-8xl mx-auto flex justify-between items-center">
+          <ul className="max-w-7xl mx-auto flex justify-between items-center">
             <li>
-              <a href="/" className="flex items-center gap-2 text-white text-xl font-bold tracking-wide hover:text-purple-300 transition-colors" style={{ fontFamily: "var(--font-montserrat)" }}>
+              <Link href="/" className="flex items-center gap-2 text-white text-xl font-bold tracking-wide hover:text-purple-300 transition-colors" style={{ fontFamily: "var(--font-montserrat)" }}>
                 <img src="/favicon.ico" alt="Logo" className="w-12 h-12"/>
                 Crypto Watchlist
-              </a>
+              </Link>
             </li>
             <li>
-              <a href="/add-crypto-form" className="text-white hover:text-gray-300 font-semibold text-2xl" style={{ fontFamily: "var(--font-montserrat)" }}>
+              <Link href="/add-crypto-form" className="text-white hover:text-gray-300 font-semibold text-2xl" style={{ fontFamily: "var(--font-montserrat)" }}>
                 Add Crypto
-              </a>
+              </Link>
             </li>
           </ul>
         </nav>
