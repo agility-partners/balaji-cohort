@@ -1,7 +1,7 @@
 import CryptoCard from "./CryptoCard";
 import { cryptosData } from "../mock/cryptos.mock";
 
-export default function Home() {
+export default function CryptoHomePage() {
   return (
     <>
       <h1 className="text-7xl font-extrabold text-center mb-20 mt-0 text-purple-200 drop-shadow-lg">
