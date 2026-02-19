@@ -7,7 +7,6 @@ export interface CryptoCardProps {
 }
 
 export interface CryptoDetails extends CryptoCardProps {
-  image: string;
   description: string;
   marketCap: number;
   volume24h: number;

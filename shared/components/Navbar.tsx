@@ -17,11 +17,6 @@ export default function Navbar() {
                 Crypto Watchlist
               </Link>
             </li>
-            <li>
-              <Link href="/add-crypto-form" className="text-white hover:text-gray-300 font-semibold text-2xl" style={{ fontFamily: "var(--font-montserrat)" }}>
-                Add Crypto
-              </Link>
-            </li>
           </ul>
         </nav>
     )

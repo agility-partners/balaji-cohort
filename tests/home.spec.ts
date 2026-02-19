@@ -45,14 +45,4 @@ test.describe('navbar tests', () => {
     await page.getByRole('link', { name: 'Crypto Watchlist' }).click();
     await expect(page).toHaveURL("http://localhost:3000/");
   });
-
-
-  test('has "add crypto" page link', async ({ page }) => {
-    await expect(page.getByRole('link', { name: 'Add Crypto' })).toBeVisible();
-  });
-
-  test('add crypto page link navigates to add crypto page', async ({ page }) => {    
-    await page.getByRole('link', { name: 'Add Crypto' }).click();
-    await expect(page).toHaveURL("http://localhost:3000/add-crypto-form");
-  });
 });

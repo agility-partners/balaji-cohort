@@ -1,23 +1,13 @@
 "use client";
 import CryptoCard from "./CryptoCard";
 import { cryptosData } from "../mock/cryptos.mock";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 export default function CryptoHomePage() {
   const [search, setSearch] = useState("");
-  const [favorites, setFavorites] = useState<string[] | null>(null); // default null so we know not to override localStorage with null array
+  const [favorites, setFavorites] = useLocalStorage<string[]>("cryptoFavorites", [], { initializeWithValue: false});
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("cryptoFavorites");
-    if (stored) setFavorites(JSON.parse(stored));
-  }, []);
-
-  useEffect(() => {
-    if (favorites !== null) {
-      localStorage.setItem("cryptoFavorites", JSON.stringify(favorites));
-    }
-  }, [favorites]);
 
   const filteredCryptos = cryptosData.filter(
     (crypto) =>
@@ -30,15 +20,14 @@ export default function CryptoHomePage() {
     : filteredCryptos;
 
   const toggleFavorite = (ticker: string) => {
-    setFavorites((prev) => {
-      if (!prev) return [ticker]; // if favorites was null (first time adding), initialize with the new ticker
-      return prev.includes(ticker)
+    setFavorites((prev) =>
+      prev.includes(ticker)
         ? prev.filter((fav) => fav !== ticker) // filter out the ticker from favorites array if already in favorites since it was clicked on
-        : [...prev, ticker];
-    });
+        : [...prev, ticker]
+    );
   }
 
-  if (favorites === null) {
+  if (favorites.length === 0) {
     return <div className="text-center text-purple-200 text-xl mt-10">Loading...</div>;
   } else
   {
