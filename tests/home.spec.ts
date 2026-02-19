@@ -25,10 +25,67 @@ test.describe('page content tests', () => {
     await expect(page.getByRole('heading', { name: 'Crypto Watchlist' })).toBeVisible();
   }); 
 
+  test('search input updates value on typing', async ({ page }) => {
+    const searchInput = page.getByPlaceholder('Search by name or ticker...');
+    await searchInput.fill('Bitcoin');
+    await expect(searchInput).toHaveValue('Bitcoin');
+  });
+
+  test('favorites toggle button toggles state', async ({ page }) => {
+    const favToggle = page.locator('button').filter({ hasText: /Show Favorites|Show All/i }).first();
+    await expect(favToggle).toHaveText(/Show Favorites/i);
+    await favToggle.click();
+    await expect(favToggle).toHaveText(/Show All/i);
+    await favToggle.click();
+    await expect(favToggle).toHaveText(/Show Favorites/i);
+  });
+
   for (const crypto of cryptosData) {
     test(`has ${crypto.name} card`, async ({ page }) => {  
       await expect(page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` })).toBeVisible();
     }); 
+
+    test(`has price for ${crypto.name} card`, async ({ page }) => {
+      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
+      const card = heading.locator('xpath=..'); // finds parent card div of this heading
+      await expect(card.getByText(new RegExp(`^Current Price:\\s*\\$${crypto.price}$`, 'i'))).toBeVisible();
+    });
+
+    test(`has "View Details" link for ${crypto.name} card`, async ({ page }) => {
+      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
+      const card = heading.locator('xpath=..');
+      await expect(card.getByRole('link', { name: 'View Details' })).toBeVisible();
+    });
+
+    test(`"View Details" link for ${crypto.name} card navigates to details page`, async ({ page }) => {
+      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
+      const card = heading.locator('xpath=..');
+      await card.getByRole('link', { name: 'View Details' }).click();
+      await expect(page).toHaveURL(`http://localhost:3000/${crypto.ticker.toLowerCase()}`);
+    });
+
+    test(`has favorite button for ${crypto.name} card`, async ({ page }) => {
+      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
+      const card = heading.locator('xpath=..');
+      await expect(card.getByRole('button', { name: /Add to favorites|Remove from favorites/i })).toBeVisible();
+    });
+
+    test(`favorite button for ${crypto.name} card toggles favorite state`, async ({ page }) => {
+      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
+      const card = heading.locator('xpath=..');
+      const favButton = card.getByRole('button', { name: /Add to favorites|Remove from favorites/i });
+
+      // Initially should be "Add to favorites"
+      await expect(favButton).toHaveAttribute('aria-label', 'Add to favorites');
+      
+      // Click to add to favorites
+      await favButton.click();
+      await expect(favButton).toHaveAttribute('aria-label', 'Remove from favorites');
+      
+      // Click again to remove from favorites
+      await favButton.click();
+      await expect(favButton).toHaveAttribute('aria-label', 'Add to favorites');
+     });
   }
 });
 

@@ -3,11 +3,21 @@ import CryptoCard from "./CryptoCard";
 import { cryptosData } from "../mock/cryptos.mock";
 import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
+import { useEffect } from "react";
 
 export default function CryptoHomePage() {
   const [search, setSearch] = useState("");
   const [favorites, setFavorites] = useLocalStorage<string[]>("cryptoFavorites", [], { initializeWithValue: false});
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) {
+    return <div className="text-center text-purple-200 text-xl mt-10">Loading...</div>;
+  }
 
   const filteredCryptos = cryptosData.filter(
     (crypto) =>
@@ -25,13 +35,6 @@ export default function CryptoHomePage() {
         ? prev.filter((fav) => fav !== ticker) // filter out the ticker from favorites array if already in favorites since it was clicked on
         : [...prev, ticker]
     );
-  }
-
-  if (favorites.length === 0) {
-    return <div className="text-center text-purple-200 text-xl mt-10">Loading...</div>;
-  } else
-  {
-    console.log("Favorites loaded from localStorage:", favorites);
   }
 
   return (
