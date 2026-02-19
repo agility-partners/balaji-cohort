@@ -12,4 +12,9 @@ export interface CryptoDetails extends CryptoCardProps {
   marketCap: number;
   volume24h: number;
   change24h: number;
+  priceHistory?: { date: string; price: number }[];
+}
+
+export interface PriceHistoryChartProps {
+  priceHistory: { date: string; price: number }[];
 }

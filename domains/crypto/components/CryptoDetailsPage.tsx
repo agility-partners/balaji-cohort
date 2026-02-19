@@ -2,6 +2,7 @@
 import { useParams } from "next/navigation";
 import { CryptoDetails } from "../types/crypto.types";
 import { cryptosData } from "../mock/cryptos.mock";
+import PriceHistoryChart from "./PriceHistoryChart";
 
 export default function CryptoDetailsPage() {
     const { ticker } = useParams();
@@ -29,6 +30,8 @@ export default function CryptoDetailsPage() {
                     <p className="mb-2">Market Cap: ${formatter.format(cryptoData.marketCap)}</p>
                     <p className="mb-2">24h Volume: ${formatter.format(cryptoData.volume24h)}</p>
                     <p className="mb-2">24h Change: {cryptoData.change24h}%</p>
+                    <PriceHistoryChart priceHistory={cryptoData.priceHistory ?? []} />
+
                 </div>
             ) : (
                 <p>Crypto not found</p>
