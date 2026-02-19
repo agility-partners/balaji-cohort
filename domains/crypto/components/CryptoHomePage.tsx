@@ -1,16 +1,49 @@
 "use client";
 import CryptoCard from "./CryptoCard";
 import { cryptosData } from "../mock/cryptos.mock";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CryptoHomePage() {
   const [search, setSearch] = useState("");
+  const [favorites, setFavorites] = useState<string[] | null>(null); // default null so we know not to override localStorage with null array
+  const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("cryptoFavorites");
+    if (stored) setFavorites(JSON.parse(stored));
+  }, []);
+
+  useEffect(() => {
+    if (favorites !== null) {
+      localStorage.setItem("cryptoFavorites", JSON.stringify(favorites));
+    }
+  }, [favorites]);
 
   const filteredCryptos = cryptosData.filter(
     (crypto) =>
       crypto.name.toLowerCase().includes(search.toLowerCase()) ||
       crypto.ticker.toLowerCase().includes(search.toLowerCase())
   );
+
+  const displayedCryptos = showOnlyFavorites
+    ? filteredCryptos.filter((crypto) => favorites && favorites.includes(crypto.ticker))
+    : filteredCryptos;
+
+  const toggleFavorite = (ticker: string) => {
+    setFavorites((prev) => {
+      if (!prev) return [ticker]; // if favorites was null (first time adding), initialize with the new ticker
+      return prev.includes(ticker)
+        ? prev.filter((fav) => fav !== ticker) // filter out the ticker from favorites array if already in favorites since it was clicked on
+        : [...prev, ticker];
+    });
+  }
+
+  if (favorites === null) {
+    return <div className="text-center text-purple-200 text-xl mt-10">Loading...</div>;
+  } else
+  {
+    console.log("Favorites loaded from localStorage:", favorites);
+  }
 
   return (
     <>
@@ -19,7 +52,8 @@ export default function CryptoHomePage() {
       </h1>
 
       <div className="w-full max-w-6xl mx-auto px-4 self-stretch">
-        <div className="mb-8 w-full">
+        <div className="mb-8 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          {/* Search bar */}
           <input
             type="text"
             value={search}
@@ -27,15 +61,31 @@ export default function CryptoHomePage() {
             placeholder="Search by name or ticker..."
             className="w-full max-w-md px-4 py-3 rounded-xl bg-black/35 border border-white/50 text-white placeholder:text-purple-100/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
           />
+          
+          {/* Favorites toggle button */}
+          <button
+            className={`ml-auto px-4 py-2 rounded-xl font-semibold border transition ${
+              showOnlyFavorites
+                ? "bg-purple-700 text-white border-purple-700"
+                : "bg-transparent text-purple-300 border-purple-300 hover:bg-purple-300/20"
+            }`}
+            onClick={() => setShowOnlyFavorites((prev) => !prev)}
+            type="button"
+            >
+              {showOnlyFavorites ? "Show All" : "Show Favorites"}
+          </button>
         </div>
 
+        {/* Crypto cards grid */}
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-start">
-          {filteredCryptos.map((crypto) => (
+          {displayedCryptos.map((crypto) => (
             <CryptoCard
               key={crypto.ticker}
               name={crypto.name}
               ticker={crypto.ticker}
               price={crypto.price}
+              isFavorite={favorites.includes(crypto.ticker)}
+              onToggleFavorite={() => toggleFavorite(crypto.ticker)}
             />
           ))}
         </div>
