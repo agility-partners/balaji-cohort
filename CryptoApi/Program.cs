@@ -9,6 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ICoinService, CoinService>();
+builder.Services.AddSingleton<IWatchlistService, WatchlistService>();
 
 var app = builder.Build();
 
