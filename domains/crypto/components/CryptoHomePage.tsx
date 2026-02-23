@@ -1,22 +1,42 @@
 "use client";
 import CryptoCard from "./CryptoCard";
-import { cryptosData } from "../mock/cryptos.mock";
-import { useState } from "react";
+import { CryptoDetails } from "../types/crypto.types";
+import { getAllCoins } from "../api/coinsApi";
+// import { getWatchlist, addToWatchlist, removeFromWatchlist } from "../api/watchlistApi";
+
+import { useState, useEffect } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { useEffect } from "react";
+
 
 export default function CryptoHomePage() {
   const [search, setSearch] = useState("");
   const [favorites, setFavorites] = useLocalStorage<string[]>("cryptoFavorites", [], { initializeWithValue: false});
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  const [hydrated, setHydrated] = useState(false);
+  
+  const [cryptosData, setCryptosData] = useState<CryptoDetails[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setHydrated(true);
+    getAllCoins()
+      .then(data => {
+        setCryptosData(data);
+        setLoading(false);
+        console.log("Called GET /api/coins")
+      })
+      .catch(() => {
+        setError("Failed to load coins");
+        setLoading(false);
+        console.log("Failed to call GET /api/coins");
+      })
   }, []);
 
-  if (!hydrated) {
-    return <div className="text-center text-purple-200 text-xl mt-10">Loading...</div>;
+  if (loading) {
+    return <div className="text-center text-purple-300 text-xl mt-10">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 text-xl mt-10">{error}</div>;
   }
 
   const filteredCryptos = cryptosData.filter(

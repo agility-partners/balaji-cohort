@@ -1,10 +1,16 @@
+using CryptoApi.DTOs;
+
 namespace CryptoApi.Models;
 
 public class Coin
 {
     public string Id { get; set; } = string.Empty;
-    public string Symbol { get; set; } = string.Empty;
+    public string Ticker { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public decimal MarketCap { get; set; }
+    public decimal Volume24h { get; set; }
     public decimal Change24h { get; set; }
+    public List<PriceHistoryEntry> PriceHistory { get; set; } = new List<PriceHistoryEntry>();
 }

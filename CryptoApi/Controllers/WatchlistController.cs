@@ -47,7 +47,7 @@ public class WatchlistController : ControllerBase
     private static CoinDto MapToDto(Coin coin) => new()
     {
         Id = coin.Id,
-        Symbol = coin.Symbol,
+        Ticker = coin.Ticker,
         Name = coin.Name,
         Price = coin.Price,
         Change24h = coin.Change24h
