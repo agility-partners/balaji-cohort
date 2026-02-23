@@ -37,19 +37,26 @@ public class WatchlistController : ControllerBase
         };
     }
 
-    [HttpDelete("{coinId}")]
-    public async Task<ActionResult> Remove(string coinId)
+    [HttpDelete("{ticker}")]
+    public async Task<ActionResult> Remove(string ticker)
     {
-        var result = await _watchlistService.RemoveAsync(coinId);
+        var result = await _watchlistService.RemoveAsync(ticker);
         return result == WatchlistRemoveResult.Removed ? NoContent() : NotFound();
     }
 
     private static CoinDto MapToDto(Coin coin) => new()
     {
-        Id = coin.Id,
         Ticker = coin.Ticker,
         Name = coin.Name,
         Price = coin.Price,
-        Change24h = coin.Change24h
+        Description = coin.Description,
+        MarketCap = coin.MarketCap,
+        Volume24h = coin.Volume24h,
+        Change24h = coin.Change24h,
+        PriceHistory = coin.PriceHistory.Select(ph => new PriceHistoryEntry
+        {
+            Date = ph.Date,
+            Price = ph.Price
+        }).ToList()
     };
 }

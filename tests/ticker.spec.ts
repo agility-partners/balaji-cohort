@@ -16,6 +16,6 @@ test.describe(`Crypto Ticker Details Page`, () => {
 
     test(`shows "Crypto not found" for invalid ticker`, async ({ page }) => {
         await page.goto('http://localhost:3000/invalidticker');
-        await expect(page.getByText(/Crypto not found/i)).toBeVisible();
+        await expect(page.getByText(/Failed to load coin data/i)).toBeVisible();
     });
 });

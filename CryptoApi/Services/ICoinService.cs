@@ -5,5 +5,5 @@ namespace CryptoApi.Services;
 public interface ICoinService
 {
     Task<IReadOnlyList<Coin>> GetAllAsync();
-    Task<Coin?> GetByIdAsync(string id);
+    Task<Coin?> GetByIdAsync(string ticker);
 }

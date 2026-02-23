@@ -23,10 +23,10 @@ public class CoinsController : ControllerBase
         return Ok(coins.Select(MapToDto));
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<CoinDto>> GetById(string id)
+    [HttpGet("{ticker}")]
+    public async Task<ActionResult<CoinDto>> GetById(string ticker)
     {
-        var coin = await _coinService.GetByIdAsync(id);
+        var coin = await _coinService.GetByIdAsync(ticker);
         if (coin is null) return NotFound();
 
         return Ok(MapToDto(coin));
@@ -34,7 +34,6 @@ public class CoinsController : ControllerBase
 
     private static CoinDto MapToDto(Coin coin) => new()
     {
-        Id = coin.Id,
         Ticker = coin.Ticker,
         Name = coin.Name,
         Price = coin.Price,
