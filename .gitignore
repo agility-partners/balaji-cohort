@@ -43,3 +43,11 @@ next-env.d.ts
 # playwright
 /playwright-report
 /test-results
+
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates

@@ -1,0 +1,7 @@
+@CryptoApi_HostAddress = http://localhost:5037
+
+GET {{CryptoApi_HostAddress}}/api/coins
+Accept: application/json
+
+GET {{CryptoApi_HostAddress}}/api/coins/bitcoin
+Accept: application/json
