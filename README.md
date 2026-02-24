@@ -81,7 +81,7 @@ docker run --rm -p 8080:8080 cryptoapi
 
 ---
 
-### 4. End-to-End Testing (Playwright)
+### 3. End-to-End Testing (Playwright)
 
 #### Install Playwright
 ```bash
