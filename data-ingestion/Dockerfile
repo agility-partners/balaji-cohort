@@ -18,8 +18,8 @@ RUN apt-get update && apt-get install -y cron
 
 COPY cronjob.txt /etc/cron.d/ingest-cron
 
-RUN chmod 0644 /etc/cron.d/ingest-cron
+RUN sed -i 's/\r$//' /etc/cron.d/ingest-cron && \
+    chmod 0644 /etc/cron.d/ingest-cron && \
+    crontab /etc/cron.d/ingest-cron
 
-RUN crontab /etc/cron.d/ingest-cron
-
-CMD ["cron", "-f"]
+CMD ["/bin/sh", "-c", "printenv > /etc/environment && cron -f"]

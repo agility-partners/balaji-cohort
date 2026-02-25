@@ -1,1 +1,1 @@
-*/5 * * * * python /app/coingecko_ingest.py >> /app/cron.log 2>&1
+*/5 * * * * . /etc/environment; /usr/local/bin/python /app/coingecko_ingest.py >> /app/cron.log 2>&1
