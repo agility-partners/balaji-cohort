@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${SQL_SERVER_PASS}"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+  data_ingestion:
+    build:
+      context: ./data-ingestion
+    container_name: data_ingestion
+    depends_on:
+      - sqlserver
+    environment:
+      - SQL_SERVER_HOST: sqlserver
+      - SQL_SERVER_PORT: 1433
+      - SQL_SERVER_USER: sa
+      - SQL_SERVER_PASS: ${SQL_SERVER_PASS}
+
+volumes:
+  sqlserver_data:
