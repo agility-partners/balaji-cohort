@@ -1,5 +1,5 @@
 # Cryptocurreny Watchlist Webapp
-A full-stack web application for cryptocurrency data, built with Next.js (frontend) and ASP.NET Core (backend). Includes Playwright tests and Docker support for backend containerization.
+A full-stack web application for cryptocurrency data, built with Next.js (frontend) and ASP.NET Core (backend). Includes .NET Xunit and Moq unit tests, integration tests and Playwright End-to-End (E2E) tests and Docker support for backend containerization.
 
 ---
 
@@ -10,6 +10,7 @@ balaji-cohort/
 ├── .env.local                # Frontend environment variables
 ├── app/                      # Next.js frontend app
 ├── CryptoApi/                # ASP.NET Core backend API
+├── CryptoApi/Tests           # ASP.NET Core tests
 ├── domains/                  # Domain logic (crypto)
 ├── shared/                   # Shared frontend components
 ├── tests/                    # Playwright test specs
@@ -87,7 +88,9 @@ docker run --rm -p 8080:8080 cryptoapi
 
 ---
 
-### 3. End-to-End Testing (Playwright)
+### 3. Testing (Playwright)
+
+**End-to-End (E2E) Playwright Testing**
 
 #### Install Playwright
 ```bash
@@ -100,3 +103,13 @@ npx playwright test
 ```
 
 Test specs are in the `tests/` folder.
+
+**.NET Backend Testing**
+
+#### Installation
+1. Install .NET 8.0
+
+#### Run tests
+```bash 
+dotnet test
+```
