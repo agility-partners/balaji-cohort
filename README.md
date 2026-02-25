@@ -47,7 +47,7 @@ Frontend runs at [http://localhost:3000](http://localhost:3000).
 **OPTION A: Run backend locally**
 
 #### Configure environment variables
-Edit `.env.local`:
+Add a `.env.local` file in root dir:
 ```
 NEXT_PUBLIC_API_URL=http://localhost:5037
 ```
@@ -67,6 +67,12 @@ Backend runs at [http://localhost:5037](http://localhost:5037).
 ---
 
 **OPTION B: Run backend in Docker**
+
+#### Configure environment variables
+Add a `.env.local` file in root dir:
+```
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
 
 #### Build Docker image
 ```powershell
