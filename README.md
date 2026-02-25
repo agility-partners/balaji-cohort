@@ -75,6 +75,8 @@ Add a `.env.local` file in root dir:
 NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
+```
+
 #### Build Docker image
 ```powershell
 cd CryptoApi
@@ -86,9 +88,16 @@ docker build -t cryptoapi .
 docker run --rm -p 8080:8080 cryptoapi
 ```
 
+### 3. Data Pipeline (SQL Server and Python Data Ingestion Script)
+
+#### Run containers
+```bash
+docker-compose up -d
+```
+
 ---
 
-### 3. Testing (Playwright)
+### 4. Testing (Playwright)
 
 **End-to-End (E2E) Playwright Testing**
 
