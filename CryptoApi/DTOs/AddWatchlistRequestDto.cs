@@ -2,5 +2,5 @@ namespace CryptoApi.DTOs;
 
 public class AddWatchlistRequestDto
 {
-    public string CoinId { get; set; } = string.Empty;
+    public string Ticker { get; set; } = string.Empty;
 }

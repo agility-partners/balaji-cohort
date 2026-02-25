@@ -17,27 +17,27 @@ public class WatchlistService : IWatchlistService
     {
         var result = new List<Coin>();
 
-        foreach (var coinId in _watchlist.Keys)
+        foreach (var ticker in _watchlist.Keys)
         {
-            var coin = await _coinService.GetByIdAsync(coinId);
+            var coin = await _coinService.GetByIdAsync(ticker);
             if (coin is not null) result.Add(coin);
         }
 
         return result;
     }
 
-    public async Task<WatchlistAddResult> AddAsync(string coinId)
+    public async Task<WatchlistAddResult> AddAsync(string ticker)
     {
-        var coin = await _coinService.GetByIdAsync(coinId);
+        var coin = await _coinService.GetByIdAsync(ticker);
         if (coin is null) return WatchlistAddResult.CoinNotFound;
 
-        var added = _watchlist.TryAdd(coinId, 0);
+        var added = _watchlist.TryAdd(ticker, 0);
         return added ? WatchlistAddResult.Added : WatchlistAddResult.AlreadyExists;
     }
 
-    public Task<WatchlistRemoveResult> RemoveAsync(string coinId)
+    public Task<WatchlistRemoveResult> RemoveAsync(string ticker)
     {
-        var removed = _watchlist.TryRemove(coinId, out _);
+        var removed = _watchlist.TryRemove(ticker, out _);
         return Task.FromResult(removed ? WatchlistRemoveResult.Removed : WatchlistRemoveResult.NotFound);
     }
 }

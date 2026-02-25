@@ -26,13 +26,13 @@ public class WatchlistController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Add([FromBody] AddWatchlistRequestDto request)
     {
-        var result = await _watchlistService.AddAsync(request.CoinId);
+        var result = await _watchlistService.AddAsync(request.Ticker);
 
         return result switch
         {
             WatchlistAddResult.CoinNotFound => NotFound(new { message = "Coin not found." }),
             WatchlistAddResult.AlreadyExists => Conflict(new { message = "Coin already in watchlist." }),
-            WatchlistAddResult.Added => Created($"/api/watchlist/{request.CoinId}", null),
+            WatchlistAddResult.Added => Created($"/api/watchlist/{request.Ticker}", null),
             _ => BadRequest(new { message = "An unexpected error occurred." })
         };
     }

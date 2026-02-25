@@ -18,6 +18,6 @@ public enum WatchlistRemoveResult
 public interface IWatchlistService
 {
     Task<IReadOnlyList<Coin>> GetWatchlistAsync();
-    Task<WatchlistAddResult> AddAsync(string coinId);
-    Task<WatchlistRemoveResult> RemoveAsync(string coinId);
+    Task<WatchlistAddResult> AddAsync(string ticker);
+    Task<WatchlistRemoveResult> RemoveAsync(string ticker);
 }
