@@ -1,9 +1,9 @@
-using CryptoApi.Models;
+using CryptoApi.DTOs;
 
 namespace CryptoApi.Services;
 
 public interface ICoinService
 {
-    Task<IReadOnlyList<Coin>> GetAllAsync();
-    Task<Coin?> GetByIdAsync(string ticker);
+    Task<IReadOnlyList<CoinDto>> GetAllAsync();
+    Task<CoinDto?> GetByIdAsync(string ticker);
 }

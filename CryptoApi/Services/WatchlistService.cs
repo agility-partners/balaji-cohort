@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using CryptoApi.Models;
+using CryptoApi.DTOs;
 
 namespace CryptoApi.Services;
 
@@ -13,9 +13,9 @@ public class WatchlistService : IWatchlistService
         _coinService = coinService;
     }
 
-    public async Task<IReadOnlyList<Coin>> GetWatchlistAsync()
+    public async Task<IReadOnlyList<CoinDto>> GetWatchlistAsync()
     {
-        var result = new List<Coin>();
+        var result = new List<CoinDto>();
 
         foreach (var ticker in _watchlist.Keys)
         {

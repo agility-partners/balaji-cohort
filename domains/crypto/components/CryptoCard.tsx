@@ -3,7 +3,7 @@ import { CryptoCardProps } from "../types/crypto.types";
 
 export default function CryptoCard({ name, ticker, price, isFavorite = false, onToggleFavorite }: CryptoCardProps) {
     return (
-        <div className="w-64 rounded-lg bg-white p-4 shadow-md relative">
+        <div className="w-64 h-45 flex flex-col rounded-lg bg-white p-4 shadow-md relative">
 
             <button
                 onClick={onToggleFavorite}
@@ -22,11 +22,13 @@ export default function CryptoCard({ name, ticker, price, isFavorite = false, on
                 )}
             </button>
 
-            <h2 className="text-xl text-black font-bold mb-2">{name} ({ticker})</h2>
-            <p className="text-blue-600 mb-4">Current Price: ${price}</p>
+            <div className="flex-1">    
+                <h2 className="text-xl text-black font-bold mb-2">{name} ({ticker})</h2>
+                <p className="text-blue-600 mb-4">Current Price: ${price}</p>
+            </div>
 
             <Link href={`/${ticker.toLowerCase()}`}>
-                <button className="w-full rounded bg-blue-500 text-white py-2 hover:bg-blue-600">
+                <button className="w-full rounded bg-blue-500 text-white py-2 hover:bg-blue-600 mt-auto">
                     View Details
                 </button>
             </Link>

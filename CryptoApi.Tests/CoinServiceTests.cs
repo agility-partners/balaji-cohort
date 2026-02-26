@@ -1,7 +1,7 @@
 using Xunit;
 using Moq;
 using CryptoApi.Services;
-using CryptoApi.Models;
+using CryptoApi.DTOs;
 using System.Threading.Tasks;
 using System.Reflection;
 
@@ -13,16 +13,16 @@ public class CoinServiceTests
     public async Task GetAllAsync_ReturnsListOfCoins()
     {
         var mockService = new Mock<ICoinService>();
-        var expectedCoins = new List<Coin>
+        var expectedCoins = new List<CoinDto>
         {
-            new Coin { Name = "Bitcoin", Ticker = "BTC" },
-            new Coin { Name = "Ethereum", Ticker = "ETH" },
-            new Coin { Name = "Cardano", Ticker = "ADA" },
-            new Coin { Name = "Solana", Ticker = "SOL" },
-            new Coin { Name = "Polkadot", Ticker = "DOT" },
-            new Coin { Name = "Avalanche", Ticker = "AVAX" },
-            new Coin { Name = "Chainlink", Ticker = "LINK" },
-            new Coin { Name = "Uniswap", Ticker = "UNI" },
+            new CoinDto { Name = "Bitcoin", Ticker = "BTC" },
+            new CoinDto { Name = "Ethereum", Ticker = "ETH" },
+            new CoinDto { Name = "Cardano", Ticker = "ADA" },
+            new CoinDto { Name = "Solana", Ticker = "SOL" },
+            new CoinDto { Name = "Polkadot", Ticker = "DOT" },
+            new CoinDto { Name = "Avalanche", Ticker = "AVAX" },
+            new CoinDto { Name = "Chainlink", Ticker = "LINK" },
+            new CoinDto { Name = "Uniswap", Ticker = "UNI" },
         };
         mockService.Setup(s => s.GetAllAsync()).ReturnsAsync(expectedCoins);
 
@@ -44,7 +44,7 @@ public class CoinServiceTests
     public async Task GetByIdAsync_ReturnsCoin_WhenCoinExists()
     {
         var mockService = new Mock<ICoinService>();
-        var expectedCoin = new Coin { Name = "Bitcoin", Ticker = "BTC" };
+        var expectedCoin = new CoinDto { Name = "Bitcoin", Ticker = "BTC" };
         mockService.Setup(s => s.GetByIdAsync("BTC")).ReturnsAsync(expectedCoin);
 
         var result = await mockService.Object.GetByIdAsync("BTC");
@@ -58,7 +58,7 @@ public class CoinServiceTests
     public async Task GetByIdAsync_ReturnsNull_WhenCoinDoesNotExist()
     {
         var mockService = new Mock<ICoinService>();
-        mockService.Setup(s => s.GetByIdAsync("NONEXISTENT")).ReturnsAsync((Coin)null);
+        mockService.Setup(s => s.GetByIdAsync("NONEXISTENT")).ReturnsAsync((CoinDto?)null);
 
         var result = await mockService.Object.GetByIdAsync("NONEXISTENT");
 
@@ -69,7 +69,7 @@ public class CoinServiceTests
     public async Task GetByIdAsync_IsCaseInsensitive()
     {
         var mockService = new Mock<ICoinService>();
-        var expectedCoin = new Coin { Name = "Bitcoin", Ticker = "BTC" };
+        var expectedCoin = new CoinDto { Name = "Bitcoin", Ticker = "BTC" };
         mockService.Setup(s => s.GetByIdAsync(It.Is<string>(s => s.Equals("BTC", StringComparison.OrdinalIgnoreCase)))).ReturnsAsync(expectedCoin);
 
         var resultLower = await mockService.Object.GetByIdAsync("btc");

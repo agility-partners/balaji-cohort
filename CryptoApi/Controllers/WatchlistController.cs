@@ -20,7 +20,7 @@ public class WatchlistController : ControllerBase
     public async Task<ActionResult<IEnumerable<CoinDto>>> GetWatchlist()
     {
         var watchlist = await _watchlistService.GetWatchlistAsync();
-        return Ok(watchlist.Select(MapToDto));
+        return Ok(watchlist);
     }
 
     [HttpPost]

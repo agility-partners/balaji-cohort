@@ -1,4 +1,4 @@
-using CryptoApi.Models;
+using CryptoApi.DTOs;
 
 namespace CryptoApi.Services;
 
@@ -17,7 +17,7 @@ public enum WatchlistRemoveResult
 
 public interface IWatchlistService
 {
-    Task<IReadOnlyList<Coin>> GetWatchlistAsync();
+    Task<IReadOnlyList<CoinDto>> GetWatchlistAsync();
     Task<WatchlistAddResult> AddAsync(string ticker);
     Task<WatchlistRemoveResult> RemoveAsync(string ticker);
 }
