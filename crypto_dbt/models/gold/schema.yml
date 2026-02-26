@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: coins_current
+    description: Latest market data for all coins
+    columns:
+      - name: market_cap_rank
+        tests:
+          - is_positive
+
+models:
+  - name: market_summary
+    description: Aggregates all data
+    columns:
+      - name: market_cap_rank
+        tests:
+          - is_positive
+
+models:
+  - name: top_movers
+    description: Ranks coins by 24h price change percentage
+    columns:
+      - name: rank
+        tests:
+          - is_positive

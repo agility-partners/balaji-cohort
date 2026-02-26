@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_market_data
+    description: "Stage model that parses raw JSON data into structured format"
+    columns:
+      - name: coin_id
+        description: "Unique identifier for the cryptocurrency"
+        tests:
+          - not_null
+      - name: symbol
+        description: "Ticker symbol for the cryptocurrency (e.g., BTC, ETH)"
+        tests:
+          - not_null
+      - name: name
+        description: "Full name of the cryptocurrency"
+        tests:
+          - not_null
+      - name: current_price
+        description: "Current price of the cryptocurrency in USD"
+        tests:
+          - not_null
+          - is_positive
+      - name: market_cap
+        description: "Market capitalization of the cryptocurrency in USD"
+        tests:
+          - not_null
+          - is_positive
+      - name: total_volume
+        description: "Total trading volume of the cryptocurrency in the last 24 hours in USD"
+      - name: market_cap_rank
+        description: "Rank of the cryptocurrency by market capitalization"
+      - name: price_change_percentage_24h
+        description: "Percentage change in price over the last 24 hours"
+    tests:
+      - unique:
+          column_name: "coin_id + '-' + CAST(last_updated AS VARCHAR)"

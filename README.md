@@ -90,6 +90,11 @@ docker run --rm -p 8080:8080 cryptoapi
 
 ### 3. Data Pipeline (SQL Server and Python Data Ingestion Script)
 
+#### Create .env file that contains SQL Server password
+```bash
+SQL_SERVER_PASS=...
+```
+
 #### Run containers
 ```bash
 docker-compose up -d
@@ -121,4 +126,32 @@ Test specs are in the `tests/` folder.
 #### Run tests
 ```bash 
 dotnet test
+```
+
+**dbt Testing**
+
+#### Setup profiles.yml config
+.dbt/profiles.yml
+```yml
+crypto_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: sqlserver
+      driver: "ODBC Driver 18 for SQL Server"
+      server: localhost
+      database: crypto_data
+      schema: dbo
+      user: ...
+      password: ...
+      port: 1433
+      threads: 4
+      trust_cert: true
+  target: dev
+```
+
+#### Run tests
+```bash
+cd crypto_dbt
+dbt test
 ```
