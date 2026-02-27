@@ -17,7 +17,7 @@ export default function PriceHistoryChart({ priceHistory }: PriceHistoryChartPro
 
     return (
         <div className="mt-8 flex flex-col items-center">
-            <h3 className="text-lg font-bold mb-2">Price History (Mock)</h3>
+            <h3 className="text-lg font-bold mb-2">Price History</h3>
             <div
                 className="w-full max-w-xl"
                 style={{ width: 800, height: 300, minWidth: 800 }}

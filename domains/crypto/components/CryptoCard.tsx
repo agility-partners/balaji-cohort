@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CryptoCardProps } from "../types/crypto.types";
+import { formatter } from "@/shared/utilities/formatCurrency";
 
 export default function CryptoCard({ name, ticker, price, isFavorite = false, onToggleFavorite }: CryptoCardProps) {
     return (
@@ -24,7 +25,7 @@ export default function CryptoCard({ name, ticker, price, isFavorite = false, on
 
             <div className="flex-1">    
                 <h2 className="text-xl text-black font-bold mb-2">{name} ({ticker})</h2>
-                <p className="text-blue-600 mb-4">Current Price: ${price}</p>
+                <p className="text-blue-600 mb-4">Current Price: ${formatter.format(price)}</p>
             </div>
 
             <Link href={`/${ticker.toLowerCase()}`}>

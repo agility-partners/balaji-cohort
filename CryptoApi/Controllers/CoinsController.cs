@@ -1,5 +1,4 @@
 using CryptoApi.DTOs;
-using CryptoApi.Models;
 using CryptoApi.Services;
 using Microsoft.AspNetCore.Mvc;
 

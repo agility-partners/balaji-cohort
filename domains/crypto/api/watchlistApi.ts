@@ -6,22 +6,22 @@ export async function getWatchlist() {
     return response.json();
 }
 
-export async function addToWatchlist(coinId: string) {
+export async function addToWatchlist(ticker: string) {
     const response = await fetch(API_BASE, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ coinId })
+        body: JSON.stringify({ ticker })
     });
-    if (!response.ok) throw new Error(`Failed to add ${coinId} to watchlist`);
+    if (!response.ok) throw new Error(`Failed to add ${ticker} to watchlist`);
     return response;
 }
 
-export async function removeFromWatchlist(coinId: string) {
-    const response = await fetch(`${API_BASE}/${coinId}`, {
+export async function removeFromWatchlist(ticker: string) {
+    const response = await fetch(`${API_BASE}/${ticker}`, {
         method: "DELETE"
     });
-    if (!response.ok) throw new Error(`Failed to remove ${coinId} from watchlist`);
+    if (!response.ok) throw new Error(`Failed to remove ${ticker} from watchlist`);
     return response;
 }
