@@ -22,10 +22,10 @@ services:
     volumes:
       - sqlserver_data:/var/opt/mssql
 
-  data_ingestion: 
+  data-ingestion: 
     build:
       context: ./data-ingestion
-    container_name: data_ingestion
+    container_name: data-ingestion
     depends_on:
       - sqlserver
     environment:
@@ -34,5 +34,19 @@ services:
       SQL_SERVER_USER: sa
       SQL_SERVER_PASS: ${SQL_SERVER_PASS}
 
+  dbt-scheduler:
+    build:
+      context: ./crypto_dbt
+    container_name: dbt-scheduler
+    volumes:
+      - ./crypto_dbt:/app/crypto_dbt
+    depends_on:
+      - sqlserver
+    environment:
+      SQL_SERVER_HOST: sqlserver
+      SQL_SERVER_PORT: 1433
+      SQL_SERVER_USER: sa
+      SQL_SERVER_PASS: ${SQL_SERVER_PASS}
+    
 volumes:
   sqlserver_data:
