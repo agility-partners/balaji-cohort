@@ -9,7 +9,7 @@ export async function POST(req: Request) {
 
   const result = streamText({
     model: google('gemini-2.5-flash-lite'),
-    system: 'You are a crypto assistant. Use tools for facts. Never invent prices. Use getMarketSummary for aggregate stats and use getCurrentCoins for latest per-coin data.',
+    system: 'You are a crypto assistant. Use tools for facts. Never invent prices. Use getMarketSummary for aggregate stats, use getCurrentCoins for latest per-coin data and use getWatchlist for user watchlist data.',
     messages: modelMessages,
     stopWhen: stepCountIs(5),
     tools: {
@@ -29,6 +29,16 @@ export async function POST(req: Request) {
         execute: async () => {
           const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/coins`)
           if (!res.ok) throw new Error("Failed to fetch current coins");
+          return await res.json();
+        }
+      }),
+
+      getWatchlist: tool({
+        description: `Get user watchlist of favorite coins`,
+        inputSchema: z.object({}),
+        execute: async() => {
+          const res = await fetch(process.env.NEXT_PUBLIC_API_URL + `/api/watchlist`)
+          if (!res.ok) throw new Error("Failed to fetch user watchlist");
           return await res.json();
         }
       })
