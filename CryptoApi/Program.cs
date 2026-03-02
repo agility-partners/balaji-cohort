@@ -18,6 +18,7 @@ builder.Services.AddSingleton(connStrBuilder);
 
 builder.Services.AddSingleton<ICoinService, CoinService>();
 builder.Services.AddSingleton<IWatchlistService, WatchlistService>();
+builder.Services.AddSingleton<IMarketService, MarketService>();
 
 builder.Services.AddCors(options =>
 {

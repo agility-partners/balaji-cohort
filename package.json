@@ -9,19 +9,24 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.35",
+    "@ai-sdk/openai": "^3.0.37",
+    "@ai-sdk/react": "^3.0.107",
+    "ai": "^6.0.106",
     "chart.js": "^4.5.1",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "19.2.3",
-    "usehooks-ts": "^3.1.1"
+    "usehooks-ts": "^3.1.1",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@eslint/js": "9.0.0",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^19",
     "eslint": "^9.39.2",
     "eslint-config-next": "^0.2.4",
