@@ -102,7 +102,15 @@ docker-compose up -d
 
 ---
 
-### 4. Testing (Playwright)
+### 4. AI Crypto Agent
+
+#### Add a Google Gemini API Key to the .env file
+```bash
+SQL_SERVER_PASS=...
+GOOGLE_GENERATIVE_AI_API_KEY=...
+```
+
+### 5. Testing (Playwright)
 
 **End-to-End (E2E) Playwright Testing**
 
