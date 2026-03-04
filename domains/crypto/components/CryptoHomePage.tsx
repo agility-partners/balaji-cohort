@@ -122,6 +122,7 @@ export default function CryptoHomePage() {
               ticker={crypto.ticker}
               image={crypto.image}
               price={crypto.price}
+              change24h={crypto.change24h}
               isFavorite={favorites.includes(crypto.ticker)}
               onToggleFavorite={() => toggleFavorite(crypto.ticker)}
             />
