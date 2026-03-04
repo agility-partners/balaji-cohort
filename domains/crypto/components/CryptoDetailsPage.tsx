@@ -5,7 +5,7 @@ import { getCoinById } from "../api/coinsApi";
 import PriceHistoryChart from "./PriceHistoryChart";
 import { useEffect, useMemo, useState } from "react";
 import { CryptoDetails } from "../types/crypto.types";
-import { formatter } from "@/shared/utilities/formatCurrency";
+import { usdFormatter } from "@/shared/utilities/formatCurrency";
 
 export default function CryptoDetailsPage() {
     const [loading, setLoading] = useState(true);
@@ -110,21 +110,21 @@ export default function CryptoDetailsPage() {
                     <div className="rounded-xl border border-slate-700/70 bg-slate-900/70 p-5 backdrop-blur">
                         <p className="text-xs uppercase tracking-wide text-slate-400">Price (USD)</p>
                         <p className="mt-2 text-2xl font-bold text-white">
-                            {formatter.format(cryptoData.price)}
+                            {usdFormatter.format(cryptoData.price)}
                         </p>
                     </div>
 
                     <div className="rounded-xl border border-slate-700/70 bg-slate-900/70 p-5 backdrop-blur">
                         <p className="text-xs uppercase tracking-wide text-slate-400">Market Cap</p>
                         <p className="mt-2 text-2xl font-bold text-white">
-                            {formatter.format(cryptoData.marketCap)}
+                            {usdFormatter.format(cryptoData.marketCap)}
                         </p>
                     </div>
 
                     <div className="rounded-xl border border-slate-700/70 bg-slate-900/70 p-5 backdrop-blur">
                         <p className="text-xs uppercase tracking-wide text-slate-400">24h Volume</p>
                         <p className="mt-2 text-2xl font-bold text-white">
-                            {formatter.format(cryptoData.volume24h)}
+                            {usdFormatter.format(cryptoData.volume24h)}
                         </p>
                     </div>
                 </div>

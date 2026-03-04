@@ -1,40 +1,37 @@
 "use client";
+
 import CryptoCard from "./CryptoCard";
+import MarketSummaryPanel from "./MarketSummaryPanel";
 import { CryptoDetails } from "../types/crypto.types";
 import { getAllCoins } from "../api/coinsApi";
 import { getWatchlist, addToWatchlist, removeFromWatchlist } from "../api/watchlistApi";
-
 import { useState, useEffect } from "react";
+
+type WatchlistApiItem = string | { ticker?: string; coinId?: string };
 
 export default function CryptoHomePage() {
   const [search, setSearch] = useState("");
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showOnlyFavorites, setShowOnlyFavorites] = useState(false);
-  
+
   const [cryptosData, setCryptosData] = useState<CryptoDetails[]>([]);
   const [loadingCoins, setLoadingCoins] = useState(true);
   const [loadingWatchlist, setLoadingWatchlist] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  type WatchlistApiItem = string | { ticker?: string; coinId?: string };
-
   useEffect(() => {
-
     getAllCoins()
-      .then(data => {
+      .then((data) => {
         setCryptosData(data);
         setLoadingCoins(false);
-        console.log("Called GET /api/coins")
       })
       .catch(() => {
         setError("Failed to load coins");
         setLoadingCoins(false);
-        console.log("Failed to call GET /api/coins");
-      })
+      });
 
     getWatchlist()
       .then((data: WatchlistApiItem[]) => {
-        // If backend returns [{ ticker: "BTC" }, ...], map to ["BTC", ...]
         const tickers = data
           .map((x) => (typeof x === "string" ? x : x.ticker ?? x.coinId ?? ""))
           .filter((t): t is string => t.length > 0)
@@ -42,14 +39,11 @@ export default function CryptoHomePage() {
 
         setFavorites(tickers);
         setLoadingWatchlist(false);
-        console.log(`Called GET /api/watchlist with response: ${JSON.stringify(tickers)}`);
       })
       .catch(() => {
         setError("Failed to load favorites");
         setLoadingWatchlist(false);
-        console.log("Failed to call GET /api/watchlist");
       });
-
   }, []);
 
   if (loadingCoins || loadingWatchlist) {
@@ -67,30 +61,39 @@ export default function CryptoHomePage() {
   );
 
   const displayedCryptos = showOnlyFavorites
-    ? filteredCryptos.filter((crypto) => favorites && favorites.includes(crypto.ticker))
+    ? filteredCryptos.filter((crypto) => favorites.includes(crypto.ticker.toUpperCase()))
     : filteredCryptos;
 
   const toggleFavorite = async (ticker: string) => {
-    if (favorites.includes(ticker)) {
-      setFavorites((prev) => prev.filter((fav) => fav !== ticker));
-      await removeFromWatchlist(ticker);
-      console.log(`Called DELETE /api/watchlist/${ticker}`);
+    const normalized = ticker.toUpperCase();
+
+    if (favorites.includes(normalized)) {
+      setFavorites((prev) => prev.filter((fav) => fav !== normalized));
+      try {
+        await removeFromWatchlist(normalized);
+      } catch {
+        setFavorites((prev) => [...prev, normalized]);
+      }
     } else {
-      setFavorites((prev) => [...prev, ticker]);
-      await addToWatchlist(ticker);
-      console.log(`Called POST /api/watchlist with ${ticker}`);
+      setFavorites((prev) => [...prev, normalized]);
+      try {
+        await addToWatchlist(normalized);
+      } catch {
+        setFavorites((prev) => prev.filter((fav) => fav !== normalized));
+      }
     }
-  }
+  };
 
   return (
     <>
-      <h1 className="text-7xl font-extrabold text-center mb-20 mt-0 text-purple-200 drop-shadow-lg">
+      <h1 className="text-6xl md:text-7xl font-extrabold text-center mb-8 mt-0 text-purple-200 drop-shadow-lg">
         Crypto Watchlist
       </h1>
 
       <div className="w-full max-w-6xl mx-auto px-4 self-stretch">
+        <MarketSummaryPanel />
+
         <div className="mb-8 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          {/* Search bar */}
           <input
             type="text"
             value={search}
@@ -98,8 +101,7 @@ export default function CryptoHomePage() {
             placeholder="Search by name or ticker..."
             className="w-full max-w-md px-4 py-3 rounded-xl bg-black/35 border border-white/50 text-white placeholder:text-purple-100/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
           />
-          
-          {/* Favorites toggle button */}
+
           <button
             className={`ml-auto px-4 py-2 rounded-xl font-semibold border transition ${
               showOnlyFavorites
@@ -108,12 +110,11 @@ export default function CryptoHomePage() {
             }`}
             onClick={() => setShowOnlyFavorites((prev) => !prev)}
             type="button"
-            >
-              {showOnlyFavorites ? "Show All" : "Show Favorites"}
+          >
+            {showOnlyFavorites ? "Show All" : "Show Favorites"}
           </button>
         </div>
 
-        {/* Crypto cards grid */}
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-start">
           {displayedCryptos.map((crypto) => (
             <CryptoCard
@@ -123,7 +124,7 @@ export default function CryptoHomePage() {
               image={crypto.image}
               price={crypto.price}
               change24h={crypto.change24h}
-              isFavorite={favorites.includes(crypto.ticker)}
+              isFavorite={favorites.includes(crypto.ticker.toUpperCase())}
               onToggleFavorite={() => toggleFavorite(crypto.ticker)}
             />
           ))}
