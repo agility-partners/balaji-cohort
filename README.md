@@ -43,76 +43,32 @@ Frontend runs at [http://localhost:3000](http://localhost:3000).
 
 ---
 
-### 2. Backend (ASP.NET Core)
-
-**OPTION A: Run backend locally**
+### 2. Docker compose (backend, sqlserver, data-ingestion, dbt-scheduler, backend-test, AI agent dependencies)
 
 #### Configure environment variables
 Add a `.env.local` file in root dir:
-```
-NEXT_PUBLIC_API_URL=http://localhost:5037
-```
-
-#### Install dependencies
-```powershell
-cd CryptoApi
-dotnet restore
-```
-
-#### Run backend
-```powershell
-dotnet run
-```
-Backend runs at [http://localhost:5037](http://localhost:5037).
-
----
-
-**OPTION B: Run backend in Docker**
-
-#### Configure environment variables
-Add a `.env.local` file in root dir:
-```
+```bash
 NEXT_PUBLIC_API_URL=http://localhost:8080
 ```
 
-```
-
-#### Build Docker image
-```powershell
-cd CryptoApi
-docker build -t cryptoapi .
-```
-
-#### Run Docker container
-```powershell
-docker run --rm -p 8080:8080 cryptoapi
-```
-
-### 3. Data Pipeline (SQL Server and Python Data Ingestion Script)
-
-#### Create .env file that contains SQL Server password
-```bash
-SQL_SERVER_PASS=...
-```
-
-#### Run containers
-```bash
-docker-compose up -d
-```
-
----
-
-### 4. AI Crypto Agent
-
-#### Add a Google Gemini API Key to the .env file
+#### Create .env file that contains SQL Server password and Google Gemini API Key
 ```bash
 SQL_SERVER_PASS=...
 GOOGLE_GENERATIVE_AI_API_KEY=...
 ```
 
-### 5. Testing (Playwright)
+#### Run docker compose to spin up all containers ()
+```bash
+docker compose up -d
+```
+
+---
+
+### 3. Testing
 
 **End-to-End (E2E) Playwright Testing**
+
+NOTE: make sure to first run the [Usage](#usage) instructions to ensure all docker compose containers are all running
 
 #### Install Playwright
 ```bash
@@ -128,18 +84,15 @@ Test specs are in the `tests/` folder.
 
 **.NET Backend Testing**
 
-#### Installation
-1. Install .NET 8.0
-
 #### Run tests
 ```bash 
-dotnet test
+docker compose run --rm backend-test
 ```
 
 **dbt Testing**
 
 #### Setup profiles.yml config
-.dbt/profiles.yml
+crypto_dbt/profiles.yml
 ```yml
 crypto_dbt:
   target: dev
@@ -158,8 +111,10 @@ crypto_dbt:
   target: dev
 ```
 
+#### Respin up docker containers again
+Re-run the [Usage](#usage) instructions.
+
 #### Run tests
 ```bash
-cd crypto_dbt
-dbt test
+docker compose run --rm dbt-scheduler dbt test
 ```

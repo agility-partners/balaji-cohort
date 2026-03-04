@@ -11,7 +11,7 @@ models:
   - name: market_summary
     description: Aggregates all data
     columns:
-      - name: market_cap_rank
+      - name: total_coins
         tests:
           - is_positive
 
