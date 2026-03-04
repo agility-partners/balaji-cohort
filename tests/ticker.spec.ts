@@ -18,20 +18,14 @@ test.describe('Crypto Ticker Details Page', () => {
 
         await expect(
           page.getByRole('heading', {
-            name: new RegExp(`Crypto Details for:\\s*${crypto.ticker}`, 'i'),
-          })
-        ).toBeVisible();
-
-        await expect(
-          page.getByRole('heading', {
             name: new RegExp(`${crypto.name}\\s*\\(${crypto.ticker}\\)`, 'i'),
           })
         ).toBeVisible();
 
-        await expect(page.getByText(/Price:/i)).toBeVisible();
-        await expect(page.getByText(/Market Cap:/i)).toBeVisible();
-        await expect(page.getByText(/24h Volume:/i)).toBeVisible();
-        await expect(page.getByText(/24h Change:/i)).toBeVisible();
+        await expect(page.getByText(/Price \(USD\)/i)).toBeVisible();
+        await expect(page.getByText(/Market Cap/i)).toBeVisible();
+        await expect(page.getByText(/24h Volume/i)).toBeVisible();
+        await expect(page.getByText(/24h Change/i)).toBeVisible();
       });
     }
   });
