@@ -21,8 +21,9 @@ public class CoinService : ICoinService
         var coins = new List<CoinDto>();
         using var conn = new SqlConnection(_connStrBuilder.ConnectionString);
         using var cmd = new SqlCommand(@"
-            SELECT coin_id, symbol, name, current_price, price_change_percentage_24h, market_cap
-            FROM gold.coins_current", conn);
+            SELECT coin_id, symbol, name, image, current_price, total_volume, price_change_percentage_24h, market_cap
+            FROM gold.coins_current
+            ORDER BY current_price DESC", conn);
 
         await conn.OpenAsync();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -33,9 +34,11 @@ public class CoinService : ICoinService
                 Id = reader.GetString(0),
                 Ticker = reader.GetString(1),
                 Name = reader.GetString(2),
-                Price = reader.GetDecimal(3),
-                Change24h = reader.GetDecimal(4),
-                MarketCap = reader.GetDecimal(5)
+                Image = reader.GetString(3),
+                Price = reader.GetDecimal(4),
+                Volume24h = reader.GetDecimal(5),
+                Change24h = reader.GetDecimal(6),
+                MarketCap = reader.GetDecimal(7)
             });
         }
         return coins;
@@ -45,7 +48,7 @@ public class CoinService : ICoinService
     {
         using var conn = new SqlConnection(_connStrBuilder.ConnectionString);
         using var cmd = new SqlCommand(@"
-            SELECT coin_id, symbol, name, current_price, price_change_percentage_24h, market_cap
+            SELECT coin_id, symbol, name, image, current_price, total_volume, price_change_percentage_24h, market_cap
             FROM gold.coins_current
             WHERE symbol = @ticker", conn);
             
@@ -60,9 +63,11 @@ public class CoinService : ICoinService
                 Id = reader.GetString(0),
                 Ticker = reader.GetString(1),
                 Name = reader.GetString(2),
-                Price = reader.GetDecimal(3),
-                Change24h = reader.GetDecimal(4),
-                MarketCap = reader.GetDecimal(5)
+                Image = reader.GetString(3),
+                Price = reader.GetDecimal(4),
+                Volume24h = reader.GetDecimal(5),
+                Change24h = reader.GetDecimal(6),
+                MarketCap = reader.GetDecimal(7)
             };
 
             // load and add price history

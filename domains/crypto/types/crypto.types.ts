@@ -2,6 +2,7 @@ export interface CryptoCardProps {
   name: string; 
   ticker: string;
   price: number;
+  image: string;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
 }

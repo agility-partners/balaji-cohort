@@ -4,6 +4,7 @@ SELECT
     coin_id,
     symbol,
     name,
+    image,
     current_price,
     market_cap,
     market_cap_rank,

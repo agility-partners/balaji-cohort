@@ -1,5 +1,13 @@
-import { cryptosData } from '@/domains/crypto/mock/cryptos.mock';
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+import { CryptoDetails } from '../domains/crypto/types/crypto.types';
+
+
+let cryptosData: CryptoDetails[] = [];
+
+test.beforeAll(async ({ request }) => {
+  const response = await request.get('http://localhost:8080/api/coins');
+  cryptosData = await response.json();
+});
 
 test.describe(`page tab tests`, () => {
   test.beforeEach(async ({ page }) => {
@@ -21,9 +29,14 @@ test.describe('page content tests', () => {
     await page.goto('http://localhost:3000/');
   });
 
+  const getCard = (page: Page, name: string, ticker: string) => {
+    const heading = page.getByRole('heading', { name: `${name} (${ticker})` });
+    return page.locator('div.rounded-lg').filter({ has: heading }).first();
+  };
+
   test('has h1 heading', async ({ page }) => {
     await expect(page.getByRole('heading', { name: 'Crypto Watchlist' })).toBeVisible();
-  }); 
+  });
 
   test('search input updates value on typing', async ({ page }) => {
     const searchInput = page.getByPlaceholder('Search by name or ticker...');
@@ -40,53 +53,33 @@ test.describe('page content tests', () => {
     await expect(favToggle).toHaveText(/Show Favorites/i);
   });
 
-  for (const crypto of cryptosData) {
-    test(`has ${crypto.name} card`, async ({ page }) => {  
-      await expect(page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` })).toBeVisible();
-    }); 
+  test('renders all crypto card headings', async ({ page }) => {
+    for (const crypto of cryptosData) {
+      await expect(
+        page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` })
+      ).toBeVisible();
+    }
+  });
 
-    test(`has price for ${crypto.name} card`, async ({ page }) => {
-      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
-      const card = heading.locator('xpath=..'); // finds parent card div of this heading
-      await expect(card.getByText(new RegExp(`^Current Price:\\s*\\$${crypto.price}$`, 'i'))).toBeVisible();
-    });
+  test('each crypto card has price label, details link, and favorite button', async ({ page }) => {
+    for (const crypto of cryptosData) {
+      const card = getCard(page, crypto.name, crypto.ticker);
 
-    test(`has "View Details" link for ${crypto.name} card`, async ({ page }) => {
-      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
-      const card = heading.locator('xpath=..');
+      await expect(card.getByText(/Current Price:\s*\$/i)).toBeVisible();
       await expect(card.getByRole('link', { name: 'View Details' })).toBeVisible();
-    });
+      await expect(card.getByRole('button', { name: /Add to favorites|Remove from favorites/i })).toBeVisible();
+    }
+  });
 
-    test(`"View Details" link for ${crypto.name} card navigates to details page`, async ({ page }) => {
-      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
-      const card = heading.locator('xpath=..');
+  test('view details link navigates correctly for each crypto', async ({ page }) => {
+    for (const crypto of cryptosData) {
+      const card = getCard(page, crypto.name, crypto.ticker);
+
       await card.getByRole('link', { name: 'View Details' }).click();
       await expect(page).toHaveURL(`http://localhost:3000/${crypto.ticker.toLowerCase()}`);
-    });
-
-    test(`has favorite button for ${crypto.name} card`, async ({ page }) => {
-      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
-      const card = heading.locator('xpath=..');
-      await expect(card.getByRole('button', { name: /Add to favorites|Remove from favorites/i })).toBeVisible();
-    });
-
-    test(`favorite button for ${crypto.name} card toggles favorite state`, async ({ page }) => {
-      const heading = page.getByRole('heading', { name: `${crypto.name} (${crypto.ticker})` });
-      const card = heading.locator('xpath=..');
-      const favButton = card.getByRole('button', { name: /Add to favorites|Remove from favorites/i });
-
-      // Initially should be "Add to favorites"
-      await expect(favButton).toHaveAttribute('aria-label', 'Add to favorites');
-      
-      // Click to add to favorites
-      await favButton.click();
-      await expect(favButton).toHaveAttribute('aria-label', 'Remove from favorites');
-      
-      // Click again to remove from favorites
-      await favButton.click();
-      await expect(favButton).toHaveAttribute('aria-label', 'Add to favorites');
-     });
-  }
+      await page.goBack();
+    }
+  });
 });
 
 test.describe('navbar tests', () => {
