@@ -85,51 +85,64 @@ export default function CryptoHomePage() {
   };
 
   return (
-    <>
-      <h1 className="text-6xl md:text-7xl font-extrabold text-center mb-8 mt-0 text-purple-200 drop-shadow-lg">
-        Crypto Watchlist
-      </h1>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="rounded-3xl border border-purple-300/30 bg-black/20 backdrop-blur-md shadow-[0_0_0_1px_rgba(196,181,253,0.12),0_20px_60px_rgba(76,29,149,0.25)] p-5 sm:p-8">
+        <h1 className="text-5xl md:text-7xl font-extrabold text-center mb-3 mt-0 text-purple-200 drop-shadow-lg">
+          Crypto Watchlist
+        </h1>
+        <p className="text-center text-purple-100/80 text-sm sm:text-base mb-8">
+          Track market movers, filter quickly, and manage your favorites.
+        </p>
 
-      <div className="w-full max-w-6xl mx-auto px-4 self-stretch">
-        <MarketSummaryPanel />
+        <div className="w-full max-w-6xl mx-auto self-stretch">
+          <div className="rounded-2xl bg-black/15 border border-white/10 p-3 sm:p-4 mb-6">
+            <MarketSummaryPanel />
+          </div>
 
-        <div className="mb-8 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name or ticker..."
-            className="w-full max-w-md px-4 py-3 rounded-xl bg-black/35 border border-white/50 text-white placeholder:text-purple-100/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
-          />
-
-          <button
-            className={`ml-auto px-4 py-2 rounded-xl font-semibold border transition ${
-              showOnlyFavorites
-                ? "bg-purple-700 text-white border-purple-700"
-                : "bg-transparent text-purple-300 border-purple-300 hover:bg-purple-300/20"
-            }`}
-            onClick={() => setShowOnlyFavorites((prev) => !prev)}
-            type="button"
-          >
-            {showOnlyFavorites ? "Show All" : "Show Favorites"}
-          </button>
-        </div>
-
-        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-start">
-          {displayedCryptos.map((crypto) => (
-            <CryptoCard
-              key={crypto.ticker}
-              name={crypto.name}
-              ticker={crypto.ticker}
-              image={crypto.image}
-              price={crypto.price}
-              change24h={crypto.change24h}
-              isFavorite={favorites.includes(crypto.ticker.toUpperCase())}
-              onToggleFavorite={() => toggleFavorite(crypto.ticker)}
+          <div className="mb-8 w-full flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name or ticker..."
+              className="w-full max-w-md px-4 py-3 rounded-xl bg-black/35 border border-white/35 text-white placeholder:text-purple-100/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-purple-300/80 focus:border-purple-200 transition"
             />
-          ))}
+
+            <button
+              className={`ml-auto px-4 py-2 rounded-xl font-semibold border transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-purple-300/70 ${
+                showOnlyFavorites
+                  ? "bg-purple-700 text-white border-purple-700 hover:bg-purple-600"
+                  : "bg-transparent text-purple-200 border-purple-300/70 hover:bg-purple-300/15"
+              }`}
+              onClick={() => setShowOnlyFavorites((prev) => !prev)}
+              type="button"
+            >
+              {showOnlyFavorites ? "Show All" : "Show Favorites"}
+            </button>
+          </div>
+
+          {displayedCryptos.length === 0 ? (
+            <div className="w-full rounded-2xl border border-white/10 bg-black/20 p-10 text-center text-purple-100/80">
+              No coins match your current filter.
+            </div>
+          ) : (
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-start">
+              {displayedCryptos.map((crypto) => (
+                <CryptoCard
+                  key={crypto.ticker}
+                  name={crypto.name}
+                  ticker={crypto.ticker}
+                  image={crypto.image}
+                  price={crypto.price}
+                  change24h={crypto.change24h}
+                  isFavorite={favorites.includes(crypto.ticker.toUpperCase())}
+                  onToggleFavorite={() => toggleFavorite(crypto.ticker)}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
-    </>
+      </section>
+    </div>
   );
 }
