@@ -49,7 +49,6 @@ public class WatchlistController : ControllerBase
         Ticker = coin.Ticker,
         Name = coin.Name,
         Price = coin.Price,
-        Description = coin.Description,
         MarketCap = coin.MarketCap,
         Volume24h = coin.Volume24h,
         Change24h = coin.Change24h,

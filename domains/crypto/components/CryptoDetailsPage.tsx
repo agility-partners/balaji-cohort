@@ -92,9 +92,6 @@ export default function CryptoDetailsPage() {
                             {cryptoData.name}{" "}
                             <span className="text-cyan-300">({cryptoData.ticker})</span>
                         </h1>
-                        <p className="mt-2 max-w-3xl text-slate-300">
-                            {cryptoData.description}
-                        </p>
                     </div>
 
                     <div className="rounded-xl border border-slate-700/70 bg-slate-900/70 px-4 py-3 backdrop-blur">

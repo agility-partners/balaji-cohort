@@ -30,8 +30,9 @@ public class WatchlistApiTests : IClassFixture<WebApplicationFactory<Program>>, 
         response.EnsureSuccessStatusCode();
 
         var watchlist = await response.Content.ReadFromJsonAsync<List<CoinDto>>();
+        Assert.NotNull(watchlist);
 
-        foreach (var coin in watchlist)
+        foreach (var coin in watchlist!)
         {
             await _client.DeleteAsync($"/api/watchlist/{coin.Ticker}");
         }

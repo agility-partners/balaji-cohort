@@ -15,7 +15,6 @@ public class CoinDto
     public string Name { get; set; } = string.Empty;
     public string Image { get; set; } = string.Empty;
     public decimal Price { get; set; }
-    public string Description { get; set; } = string.Empty;
     public decimal MarketCap { get; set; }
     public decimal Volume24h { get; set; }
     public decimal Change24h { get; set; }

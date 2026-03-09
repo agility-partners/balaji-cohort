@@ -125,5 +125,5 @@ public class CoinService : ICoinService
 // Helper class for CoinGecko response
 public class CoinGeckoMarketChartResponse
 {
-    public List<List<double>> prices { get; set; }
+    public List<List<double>> prices { get; set; } = new();
 }
