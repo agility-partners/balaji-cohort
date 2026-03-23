@@ -1,5 +1,5 @@
 # Cryptocurreny Watchlist Webapp
-A full-stack web application for cryptocurrency data, built with Next.js (frontend) and ASP.NET Core (backend). Includes .NET Xunit and Moq unit tests, integration tests and Playwright End-to-End (E2E) tests and Docker support for backend containerization.
+A full-stack web application for cryptocurrency data, built with Next.js (frontend) and ASP.NET Core (backend). Includes .NET Xunit and Moq unit tests, integration tests and Playwright End-to-End (E2E) tests and Docker support for backend containerization. d
 
 ---
 
