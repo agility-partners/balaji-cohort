@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
     env:
       SQL_SERVER_PASS: ${{ secrets.SQL_SERVER_PASS }}
       NEXT_PUBLIC_API_URL: http://127.0.0.1:8080
@@ -95,12 +95,6 @@ jobs:
           END
           "
 
-      - name: Start backend
-        run: docker compose up -d backend
-
-      - name: Wait for backend process (port open)
-        run: npx -y wait-on@7.2.0 --timeout 180000 tcp:127.0.0.1:8080
-
       - name: Ingest data once (bronze)
         run: docker compose run --rm data-ingestion python coingecko_ingest.py
 
@@ -136,7 +130,7 @@ jobs:
               sys.exit(1)
           PY
 
-      - name: Build dbt silver and gold (retry)
+      - name: Build dbt silver and gold
         shell: bash
         run: |
           for i in {1..5}; do
@@ -152,6 +146,15 @@ jobs:
           docker compose ps
           docker compose logs --no-color sqlserver || true
           exit 1
+
+      - name: Run backend tests
+        run: docker compose run --rm backend-test
+
+      - name: Start backend
+        run: docker compose up -d backend
+
+      - name: Wait for backend process (port open)
+        run: npx -y wait-on@7.2.0 --timeout 180000 tcp:127.0.0.1:8080
 
       - name: Wait for API data endpoint
         run: npx -y wait-on@7.2.0 --timeout 240000 http-get://127.0.0.1:8080/api/coins
