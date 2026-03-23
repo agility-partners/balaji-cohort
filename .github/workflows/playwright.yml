@@ -130,11 +130,11 @@ jobs:
               sys.exit(1)
           PY
 
-      - name: Build dbt silver and gold
+      - name: Build dbt models required for tests
         shell: bash
         run: |
           for i in {1..5}; do
-            if docker compose run --rm dbt-scheduler dbt run --select silver.stg_market_data gold.coins_current --project-dir /app/crypto_dbt --profiles-dir /root/.dbt; then
+            if docker compose run --rm dbt-scheduler dbt run --select silver.stg_market_data gold.coins_current gold.market_summary gold.top_movers --project-dir /app/crypto_dbt --profiles-dir /root/.dbt; then
               echo "dbt run succeeded on attempt $i"
               exit 0
             fi
@@ -151,7 +151,7 @@ jobs:
         shell: bash
         run: |
           for i in {1..3}; do
-            if docker compose run --rm dbt-scheduler dbt test --project-dir /app/crypto_dbt --profiles-dir /root/.dbt; then
+            if docker compose run --rm dbt-scheduler dbt test --select silver.stg_market_data gold.coins_current gold.market_summary gold.top_movers --project-dir /app/crypto_dbt --profiles-dir /root/.dbt; then
               echo "dbt test succeeded on attempt $i"
               exit 0
             fi
@@ -162,7 +162,6 @@ jobs:
           echo "::error::dbt test failed after retries"
           docker compose ps
           docker compose logs --no-color sqlserver || true
-          docker compose run --rm dbt-scheduler sh -lc 'ls -la /app/crypto_dbt/logs && tail -n 200 /app/crypto_dbt/logs/dbt.log || true'
           exit 1
 
       - name: Run backend tests
