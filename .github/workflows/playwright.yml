@@ -9,7 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     env:
       SQL_SERVER_PASS: ${{ secrets.SQL_SERVER_PASS }}
       NEXT_PUBLIC_API_URL: http://127.0.0.1:8080
@@ -22,76 +22,110 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Validate required secret exists
+        shell: bash
+        run: |
+          if [ -z "${SQL_SERVER_PASS:-}" ]; then
+            echo "::error::Missing SQL_SERVER_PASS secret in GitHub Actions settings."
+            exit 1
+          fi
+          echo "SQL_SERVER_PASS is present"
+
       - name: Install frontend deps
         run: npm ci
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Start backend + SQL Server
-        run: docker compose up -d sqlserver backend
+      - name: Start SQL Server
+        run: docker compose up -d sqlserver
 
-      - name: Wait for backend process (port open)
-        run: npx -y wait-on@7.2.0 --timeout 120000 tcp:127.0.0.1:8080
-
-      - name: Wait for SQL Server TCP port
-        run: npx -y wait-on@7.2.0 --timeout 240000 tcp:127.0.0.1:1433
-
-      - name: Debug secret presence (safe, no value printed)
+      - name: Wait for SQL Server container readiness
         shell: bash
         run: |
-          echo "event=$GITHUB_EVENT_NAME"
-          if [ -z "${SQL_SERVER_PASS:-}" ]; then
-            echo "::error::SQL_SERVER_PASS is missing in workflow env"
-            exit 1
-          fi
-          echo "SQL_SERVER_PASS is present"
-          echo "SQL_SERVER_PASS length=${#SQL_SERVER_PASS}"
+          for i in {1..120}; do
+            state="$(docker inspect -f '{{.State.Status}}' sqlserver 2>/dev/null || echo missing)"
+            if [ "$state" != "running" ]; then
+              echo "::error::sqlserver container is not running (state=$state)"
+              docker compose ps
+              docker compose logs --no-color sqlserver || true
+              exit 1
+            fi
 
-      - name: Debug secret inside dbt container (safe)
-        shell: bash
-        run: |
-          if docker compose run --rm dbt-scheduler sh -lc 'test -n "$SQL_SERVER_PASS"'; then
-            echo "dbt-scheduler received SQL_SERVER_PASS"
-          else
-            echo "::error::dbt-scheduler did not receive SQL_SERVER_PASS"
-            exit 1
-          fi
-
-      - name: Wait for SQL Server login readiness
-        run: |
-          for i in {1..24}; do
-            if docker compose run --rm dbt-scheduler dbt debug --target dev --project-dir /app/crypto_dbt --profiles-dir /root/.dbt >/tmp/dbt-debug.log 2>&1; then
-              echo "SQL Server is ready for login"
+            if docker logs sqlserver 2>&1 | grep -q "SQL Server is now ready for client connections"; then
+              echo "SQL Server reports ready for client connections"
               exit 0
             fi
-            echo "SQL login not ready yet (attempt $i/24), retrying in 10s..."
-            sleep 10
+
+            echo "Waiting for SQL Server readiness ($i/120)..."
+            sleep 2
           done
-          echo "SQL Server never became login-ready"
+
+          echo "::error::Timed out waiting for SQL Server readiness"
           docker compose ps
           docker compose logs --no-color sqlserver || true
-          cat /tmp/dbt-debug.log || true
           exit 1
+
+      - name: Start backend
+        run: docker compose up -d backend
+
+      - name: Wait for backend process (port open)
+        run: npx -y wait-on@7.2.0 --timeout 180000 tcp:127.0.0.1:8080
 
       - name: Ingest data once (bronze)
         run: docker compose run --rm data-ingestion python coingecko_ingest.py
 
-      - name: Build dbt silver/gold once (retry)
+      - name: Verify bronze data exists
+        shell: bash
         run: |
-          for i in {1..3}; do
+          docker compose run --rm data-ingestion python - <<'PY'
+          import os
+          import pyodbc
+          import sys
+
+          conn_str = (
+              "DRIVER={ODBC Driver 18 for SQL Server};"
+              f"SERVER={os.getenv('SQL_SERVER_HOST')},{os.getenv('SQL_SERVER_PORT')};"
+              "DATABASE=crypto_data;"
+              f"UID={os.getenv('SQL_SERVER_USER')};"
+              f"PWD={os.getenv('SQL_SERVER_PASS')};"
+              "TrustServerCertificate=yes;"
+              "Connection Timeout=10;"
+          )
+
+          try:
+              with pyodbc.connect(conn_str) as conn:
+                  with conn.cursor() as cur:
+                      cur.execute("SELECT COUNT(*) FROM bronze.raw_coin_data;")
+                      count = cur.fetchone()[0]
+                      print(f"bronze.raw_coin_data count={count}")
+                      if count <= 0:
+                          print("No bronze rows found after ingestion", file=sys.stderr)
+                          sys.exit(1)
+          except Exception as e:
+              print(f"Bronze verification failed: {e}", file=sys.stderr)
+              sys.exit(1)
+          PY
+
+      - name: Build dbt silver and gold (retry)
+        shell: bash
+        run: |
+          for i in {1..5}; do
             if docker compose run --rm dbt-scheduler dbt run --select silver.stg_market_data gold.coins_current --project-dir /app/crypto_dbt --profiles-dir /root/.dbt; then
+              echo "dbt run succeeded on attempt $i"
               exit 0
             fi
-            echo "dbt run failed (attempt $i/3), waiting 20s before retry..."
+            echo "dbt run failed (attempt $i/5), retrying in 20s..."
             sleep 20
           done
+
+          echo "::error::dbt run failed after retries"
           docker compose ps
           docker compose logs --no-color sqlserver || true
           exit 1
 
       - name: Wait for API data endpoint
-        run: npx -y wait-on@7.2.0 --timeout 180000 http-get://127.0.0.1:8080/api/coins
+        run: npx -y wait-on@7.2.0 --timeout 240000 http-get://127.0.0.1:8080/api/coins
 
       - name: Run Playwright tests
         run: npx playwright test
@@ -103,7 +137,7 @@ jobs:
           docker compose logs --no-color > docker-compose.log || true
 
       - name: Upload Playwright report
-        if: ${{ !cancelled() }}
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
