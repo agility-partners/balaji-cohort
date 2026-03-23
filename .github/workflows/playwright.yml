@@ -37,6 +37,27 @@ jobs:
       - name: Wait for SQL Server TCP port
         run: npx -y wait-on@7.2.0 --timeout 240000 tcp:127.0.0.1:1433
 
+      - name: Debug secret presence (safe, no value printed)
+        shell: bash
+        run: |
+          echo "event=$GITHUB_EVENT_NAME"
+          if [ -z "${SQL_SERVER_PASS:-}" ]; then
+            echo "::error::SQL_SERVER_PASS is missing in workflow env"
+            exit 1
+          fi
+          echo "SQL_SERVER_PASS is present"
+          echo "SQL_SERVER_PASS length=${#SQL_SERVER_PASS}"
+
+      - name: Debug secret inside dbt container (safe)
+        shell: bash
+        run: |
+          if docker compose run --rm dbt-scheduler sh -lc 'test -n "$SQL_SERVER_PASS"'; then
+            echo "dbt-scheduler received SQL_SERVER_PASS"
+          else
+            echo "::error::dbt-scheduler did not receive SQL_SERVER_PASS"
+            exit 1
+          fi
+
       - name: Wait for SQL Server login readiness
         run: |
           for i in {1..24}; do
