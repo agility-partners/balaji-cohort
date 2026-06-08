@@ -21,9 +21,9 @@ public class CoinService : ICoinService
         var coins = new List<CoinDto>();
         using var conn = new SqlConnection(_connStrBuilder.ConnectionString);
         using var cmd = new SqlCommand(@"
-            SELECT coin_id, symbol, name, image, current_price, total_volume, price_change_percentage_24h, market_cap
+            SELECT TOP (25) coin_id, symbol, name, image, current_price, total_volume, price_change_percentage_24h, market_cap
             FROM gold.coins_current
-            ORDER BY current_price DESC", conn);
+            ORDER BY market_cap_rank ASC, market_cap DESC", conn);
 
         await conn.OpenAsync();
         using var reader = await cmd.ExecuteReaderAsync();
@@ -48,7 +48,7 @@ public class CoinService : ICoinService
     {
         using var conn = new SqlConnection(_connStrBuilder.ConnectionString);
         using var cmd = new SqlCommand(@"
-            SELECT coin_id, symbol, name, image, current_price, total_volume, price_change_percentage_24h, market_cap
+            SELECT TOP (1) coin_id, symbol, name, image, current_price, total_volume, price_change_percentage_24h, market_cap
             FROM gold.coins_current
             WHERE symbol = @ticker", conn);
             
